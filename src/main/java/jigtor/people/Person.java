@@ -1,5 +1,6 @@
 package jigtor.people;
 
+import jigtor.criteria.Knowledge;
 import jigtor.criteria.SkillSet;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,10 +33,9 @@ public class Person {
     }
 
     public boolean knowsWhatSeekerWantsToKnow(Person seeker) {
-        List<String> knows = this.knows();
         List<String> seekerWantsToKnow = seeker.wantsToKnow();
 
-        for (String knowledge : knows) {
+        for (String knowledge : knows()) {
             if (seekerWantsToKnow.contains(knowledge)) {
                 return true;
             }
@@ -66,5 +66,17 @@ public class Person {
     @Override
     public String toString() {
         return this.name + " (" + timeAtCompany + " years) " + this.skills;
+    }
+
+    public Integer canLearnFrom(Person mentor) {
+        List<String> seekerWantsToKnow = mentor.knows();
+        Integer knowledgeMatch = 0;
+        List<String> wantsToKnow = wantsToKnow();
+        for (String knowledge : wantsToKnow) {
+            if (seekerWantsToKnow.contains(knowledge)) {
+                knowledgeMatch += (Knowledge.Knows.getKnowledgeAmount() - Knowledge.WantToKnow.getKnowledgeAmount());
+            }
+        }
+        return knowledgeMatch;
     }
 }

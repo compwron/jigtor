@@ -9,6 +9,7 @@ import jigtor.notify.EmailEngine;
 import jigtor.people.ExperienceLevel;
 import jigtor.people.PeoplePair;
 import jigtor.people.Person;
+import jigtor.people.SponsorMatches;
 
 import java.util.List;
 
@@ -27,16 +28,20 @@ public class Main {
 
 //        1
         ByIdMatcher byIdMatcher = new ByIdMatcher();
-        Person sponsee = people.get(0);
-        List<PeoplePair> byIdPeopleMatchedPairs = byIdMatcher.matchByClosestOffset(sponsee, people, 1.5);
+        List<PeoplePair> byIdPeopleMatchedPairs = byIdMatcher.matchByClosestOffset(people.get(0), people, 1.5);
         System.out.println("Matches from Id Matcher: \n" + Joiner.on("\n").join(byIdPeopleMatchedPairs));
 
 //        2
-        ComparativeSkillMatcher comparativeSkillMatcher = new ComparativeSkillMatcher();
-        List<PeoplePair> skillMatches = comparativeSkillMatcher.matchWithin(sponsee, people);
-        System.out.println("Matches from Skill Matcher: \n" + Joiner.on("\n").join(skillMatches));
+        for (Person sponsee : people) {
+            ComparativeSkillMatcher comparativeSkillMatcher = new ComparativeSkillMatcher();
+            SponsorMatches sponsorMatches = comparativeSkillMatcher.matchWithin(sponsee, people);
+            List<PeoplePair> skillMatches = sponsorMatches.allMatches();
+            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            System.out.println("\n\nTop match from Skill Matcher for " + sponsee.getName() + ": \n" + sponsorMatches.topMatch());
+            System.out.println("\nMatches from Skill Matcher for " + sponsee.getName() + ": \n" + Joiner.on("\n").join(skillMatches));
 
-        EmailEngine emailEngine = new EmailEngine();
-        emailEngine.sendCCEmailToPeoplePairs(skillMatches);
+            EmailEngine emailEngine = new EmailEngine();
+            emailEngine.sendCCEmailToPeoplePairs(skillMatches);
+        }
     }
 }

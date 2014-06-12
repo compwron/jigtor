@@ -12,7 +12,6 @@ public class ByIdMatcher implements PeopleMatcher {
         for (Person person : people) {
             if (person.hasMoreExperienceThan(seeker.getTimeAtCompany() + lowestValidOffset)) {
                 peoplePairs.add(new PeoplePair(seeker, person));
-                System.out.println("adding");
             }
         }
         return peoplePairs;

@@ -2,19 +2,21 @@ package jigtor.matcher;
 
 import jigtor.people.PeoplePair;
 import jigtor.people.Person;
+import jigtor.people.SponsorMatches;
 
+import java.util.HashMap;
 import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
+import java.util.Map;
 
 public class ComparativeSkillMatcher {
-    public List<PeoplePair> matchWithin(Person seeker, List<Person> people) {
-        List<PeoplePair> peoplePairs = newArrayList();
-        for (Person person : people) {
-            if (person.knowsWhatSeekerWantsToKnow(seeker)) {
-                peoplePairs.add(new PeoplePair(seeker, person));
+    public SponsorMatches matchWithin(Person sponsee, List<Person> people) {
+        Map<PeoplePair, Integer> pairs = new HashMap<PeoplePair, Integer>();
+        for (Person sponsor : people) {
+            Integer amountLearnable = sponsee.canLearnFrom(sponsor);
+            if (amountLearnable > 0) {
+                pairs.put(new PeoplePair(sponsee, sponsor), amountLearnable);
             }
         }
-        return peoplePairs;
+        return new SponsorMatches(pairs);
     }
 }

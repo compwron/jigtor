@@ -11,8 +11,12 @@ import static org.hamcrest.core.Is.is;
 
 public class PersonTest {
 
-    private Person jake = new Person("jake", 1.0, scalaSkill(Knowledge.WantToKnow), 503);
-    private Person kirk = new Person("kirk", 1.0, scalaSkill(Knowledge.Knows), 504);
+    private Double timeAtCompany = 1.0;
+    private Integer employeeNumber = 1;
+    private Person jake = new Person("jake", timeAtCompany, scalaSkill(Knowledge.WantToKnow), employeeNumber);
+    private Person kirk = new Person("kirk", timeAtCompany, scalaSkill(Knowledge.Knows), employeeNumber);
+    private Person linda = new Person("linda", timeAtCompany, scalaSkill(Knowledge.Moderate), employeeNumber);
+    private Person marcus = new Person("marcus", timeAtCompany, scalaSkill(Knowledge.ALittle), employeeNumber);
 
     @Test
     public void knowsWhenPersonDoesNotHaveKnowledgeThatSeekerIsLookingFor() {
@@ -26,8 +30,7 @@ public class PersonTest {
 
     @Test
     public void midlevelKnowledgeMatchDoesNotCount() {
-        Person linda = new Person("linda", 1.0, scalaSkill(Knowledge.Moderate), 503);
-        Person marcus = new Person("marcus", 1.0, scalaSkill(Knowledge.ALittle), 504);
+
 
         assertThat(linda.knowsWhatSeekerWantsToKnow(marcus), is(false));
         assertThat(marcus.knowsWhatSeekerWantsToKnow(linda), is(false));
@@ -37,4 +40,18 @@ public class PersonTest {
         return new SkillSetBuilder().withSkill("scala", knowledge).build();
     }
 
+    @Test
+    public void skillMatchIsHigh() {
+        SkillSet wantsTwoSkills = new SkillSetBuilder().withSkill("scala", Knowledge.WantToKnow).withSkill("clojure", Knowledge.WantToKnow).build();
+        Person a = new Person("A", timeAtCompany, wantsTwoSkills, employeeNumber);
+
+        SkillSet hasOneSkill = new SkillSetBuilder().withSkill("scala", Knowledge.Knows).build();
+        Person b = new Person("B", timeAtCompany, hasOneSkill, employeeNumber);
+        int pointsForKnowDifferential = Knowledge.Knows.getKnowledgeAmount() - Knowledge.WantToKnow.getKnowledgeAmount();
+        assertThat(a.canLearnFrom(b), is(pointsForKnowDifferential));
+
+        SkillSet hasTwoSkills = new SkillSetBuilder().withSkill("scala", Knowledge.Knows).withSkill("clojure", Knowledge.Knows).build();
+        Person c = new Person("C", timeAtCompany, hasTwoSkills, employeeNumber);
+        assertThat(a.canLearnFrom(c), is(pointsForKnowDifferential * 2));
+    }
 }
