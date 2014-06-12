@@ -1,0 +1,1 @@
+Someday this will be a server and have a UI so any JC can poke it any time. For now, do batch processing by request.
