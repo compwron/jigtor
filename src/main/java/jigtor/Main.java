@@ -1,5 +1,6 @@
 package jigtor;
 
+import com.google.common.base.Joiner;
 import jigtor.criteria.Region;
 import jigtor.data.Jigsaw;
 import jigtor.matcher.ByIdMatcher;
@@ -28,12 +29,12 @@ public class Main {
         ByIdMatcher byIdMatcher = new ByIdMatcher();
         Person sponsee = people.get(0);
         List<PeoplePair> byIdPeopleMatchedPairs = byIdMatcher.matchByClosestOffset(sponsee, people, 1.5);
-        System.out.println("Matches from Id Matcher: " + byIdMatcher);
+        System.out.println("Matches from Id Matcher: \n" + Joiner.on("\n").join(byIdPeopleMatchedPairs));
 
 //        2
         ComparativeSkillMatcher comparativeSkillMatcher = new ComparativeSkillMatcher();
         List<PeoplePair> skillMatches = comparativeSkillMatcher.matchWithin(sponsee, people);
-        System.out.println("Matches from Skill Matcher: " + skillMatches);
+        System.out.println("Matches from Skill Matcher: \n" + Joiner.on("\n").join(skillMatches));
 
         EmailEngine emailEngine = new EmailEngine();
         emailEngine.sendCCEmailToPeoplePairs(skillMatches);
